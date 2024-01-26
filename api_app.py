@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 import sqlite3
+import logging as log
 
 app = Flask(__name__)
 
@@ -11,6 +12,7 @@ def get_all_files():
     cursor.execute("SELECT * FROM files")
     data = cursor.fetchall()
     conn.close()
+    log.info("Getting all files")
 
     file_list = []
     for item in data:
@@ -31,7 +33,7 @@ def get_file_info(filename):
     cursor.execute("SELECT file_path, file_name, upload_time, file_size FROM files WHERE file_name=?", (filename,))
     data = cursor.fetchone()
     conn.close()
-
+    log.info("returning %s", filename)
     if data:
         fname = data[1].split('.')[0]
         ext = data[1].split('.')[1]
@@ -42,4 +44,5 @@ def get_file_info(filename):
 
 # Entry point for the Flask app
 if __name__ == '__main__':
+    log.info('Starting App')
     app.run(debug=True)
